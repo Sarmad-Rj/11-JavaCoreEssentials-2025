@@ -44,6 +44,57 @@
         height: auto;
         max-height: 400px;
       }
+      /* Styles for the nested tasks */
+      .task-group-details {
+        background-color: #ffffff; /* Same as main content panel */
+        border: 1px solid #e0e7ff; /* Light blue border */
+        border-radius: 0.5rem; /* Rounded corners */
+        margin-top: 1.5rem; /* Space above this details block */
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Subtle shadow */
+      }
+      .task-group-summary {
+        font-weight: 600; /* Bold text for summary */
+        padding: 1rem 1.5rem; /* Padding inside summary */
+        cursor: pointer; /* Indicate clickable */
+        display: flex; /* Use flexbox for alignment */
+        align-items: center; /* Center items vertically */
+        justify-content: space-between; /* Space out content and icon */
+        color: #3730a3; /* Indigo text color */
+        transition: background-color 0.15s ease-in-out; /* Smooth hover effect */
+      }
+      .task-group-summary:hover {
+        background-color: #eff6ff; /* Lighter background on hover */
+      }
+      .task-group-summary::-webkit-details-marker {
+        display: none; /* Hide default triangle marker */
+      }
+      .task-group-summary::before {
+        content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>');
+        display: inline-block;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.75rem;
+        transition: transform 0.2s ease-in-out;
+      }
+      .task-group-details[open] .task-group-summary::before {
+        content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" /></svg>');
+        transform: rotate(180deg);
+      }
+      .task-group-content {
+        padding: 0 1.5rem 1rem 1.5rem; /* Padding for content */
+        color: #4a4a4a; /* Dark gray text */
+        line-height: 1.6; /* Improved readability */
+      }
+      .nested-task-item {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed #e0e7ff;
+      }
+      .nested-task-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
     </style>
   </head>
   <body class="antialiased">
@@ -112,6 +163,94 @@
             "Write a 'Hello, Java!' program.",
             "Create a program that takes two numbers as input, performs basic arithmetic operations (addition, subtraction, multiplication, division), and prints the results.",
             "Convert a simple C++ PF program (e.g., calculate simple interest) into Java.",
+            // New entry for all 10 home tasks
+            `<details class="task-group-details">
+              <summary class="task-group-summary">Home Taskes</summary>
+              <div class="task-group-content">
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">1. Quotient and Remainder Calculation</h3>
+                  <p class="text-sm">
+                    Write a program that inputs a dividend and a divisor. It then
+                    calculates and displays the quotient and remainder.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">2. Swap Two Numbers (with third variable)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs two numbers, swaps their values using a
+                    third variable, and then displays them.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">3. Swap Two Numbers (without third variable)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs two numbers, swaps these values
+                    without using a third variable, and displays them.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">4. Miles to Kilometers Converter</h3>
+                  <p class="text-sm">
+                    Write a program that inputs miles from the user and converts miles
+                    into kilometers. (Hint: 1 mile = 1.60934 kilometers)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">5. Sum, Average, and Product of Four Numbers</h3>
+                  <p class="text-sm">
+                    Write a program that inputs 4 numbers and calculates the sum,
+                    average, and product of all numbers.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">6. Age Converter (Years to Days/Months)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs age in years and displays age in days
+                    and months. (Assume 365 days per year and 30 days per month for simplicity)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">7. Car Travel Distance Calculator</h3>
+                  <p class="text-sm">
+                    A car can travel 5.3 miles in 1 liter. Write a program that
+                    inputs petrol in liters and displays how much distance the car can
+                    cover using the available petrol.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">8. Class Fee Calculator</h3>
+                  <p class="text-sm">
+                    Write a program that inputs the total number of students in a
+                    class and the fee per student. It displays the total fee collected
+                    from the class.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">9. Fahrenheit to Celsius Converter</h3>
+                  <p class="text-sm">
+                    Write a program that inputs temperature from the user in Fahrenheit
+                    and converts it into Celsius degree. (Formula: C = (F - 32) * 5/9)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">10. Student Marks and Percentage Calculator</h3>
+                  <p class="text-sm">
+                    Write a program that inputs marks obtained by a student in five
+                    subjects. It then calculates and displays the total marks and
+                    percentage.
+                  </p>
+                </div>
+              </div>
+            </details>`,
           ],
         },
         {
@@ -172,7 +311,7 @@
           lecture: [
             "<span class='code-snippet'>String</span> Class: Immutability of Strings in Java.",
             "String Creation: Literal vs. <span class='code-snippet'>new String()</span>.",
-            "Common String Methods: <span class='code-snippet'>length()</span>, <span class='code-snippet'>charAt()</span>, <span class='code-snippet'>substring()</span>, <span class='code-snippet'>equals()</span>, etc.",
+            "Common String Methods: <span class class='code-snippet'>length()</span>, <span class='code-snippet'>charAt()</span>, <span class='code-snippet'>substring()</span>, <span class='code-snippet'>equals()</span>, etc.",
             "<span class='code-snippet'>StringBuilder</span> & <span class='code-snippet'>StringBuffer</span>: Mutable alternatives for efficient string manipulation.",
           ],
           tasks: [
@@ -232,7 +371,7 @@
           ],
           tasks: [
             "Design an abstract class <span class='code-snippet'>Shape</span> with an abstract method <span class='code-snippet'>getArea()</span>. Create concrete classes <span class='code-snippet'>Circle</span> and <span class='code-snippet'>Rectangle</span>.",
-            "Define an interface <span class='code-snippet'>Printable</span> with a <span class='code-snippet'>print()</span> method. Make your classes implement this interface.",
+            "Define an interface <span class class='code-snippet'>Printable</span> with a <span class='code-snippet'>print()</span> method. Make your classes implement this interface.",
           ],
         },
         {
@@ -369,16 +508,18 @@
             navHTML += `<h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-4 mb-2">Week ${currentWeek}</h4><ul>`;
           }
           navHTML += `
-                    <li>
-                        <a href="#" class="nav-link block px-3 py-2 text-sm rounded-md transition-colors duration-150 ${
-                          index === currentDayIndex
-                            ? "active"
-                            : "hover:bg-gray-100"
-                        }" data-index="${index}">
-                            Day ${item.day}: ${item.title.split(" - ")[0]}
-                        </a>
-                    </li>
-                `;
+                            <li>
+                                <a href="#" class="nav-link block px-3 py-2 text-sm rounded-md transition-colors duration-150 ${
+                                  index === currentDayIndex
+                                    ? "active"
+                                    : "hover:bg-gray-100"
+                                }" data-index="${index}">
+                                    Day ${item.day}: ${
+            item.title.split(" - ")[0]
+          }
+                                </a>
+                            </li>
+                        `;
         });
         navHTML += `</ul>`;
         navContainer.innerHTML = navHTML;
@@ -389,6 +530,7 @@
         const lectureItems = dayData.lecture
           .map((item) => `<li class="mb-2">${item}</li>`)
           .join("");
+        // Task items are rendered directly from the array, allowing raw HTML
         const taskItems = dayData.tasks
           .map((item) => `<li class="mb-2">${item}</li>`)
           .join("");
@@ -504,6 +646,3 @@
     </script>
   </body>
 </html>
-
-
-
