@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>15-Day Java Syllabus</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Chosen Palette: Calm Harmony (Warm Neutrals with Muted Blue/Green Accents) -->
+    <!-- Application Structure Plan: A three-panel SPA. Left panel for persistent day-by-day navigation to allow non-linear exploration. A central, dynamic content panel to display the selected day's lecture and tasks, focusing readability. A right panel with a donut chart visualizing the course's thematic breakdown (Fundamentals, Advanced OOP, APIs) to provide an immediate high-level overview. This structure is chosen to break down a long document into manageable, easily accessible chunks, improving usability over a simple scrollable page. -->
+    <!-- Visualization & Content Choices: Syllabus Content -> Goal: Organize/Navigate -> Method: Interactive sidebar list -> Interaction: Click to update main content -> Justification: Provides quick access to any of the 15 days. | Course Structure -> Goal: Inform/Summarize -> Method: Donut Chart (Chart.js/Canvas) -> Interaction: Hover for tooltips -> Justification: Visually represents the proportional focus of the course's three main themes, adding a dynamic summary element to a text-heavy report. All other content is presented as structured, readable HTML. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #fdfbf8;
+        color: #4a4a4a;
+      }
+      .nav-link.active {
+        background-color: #e0e7ff;
+        color: #3730a3;
+        font-weight: 600;
+      }
+      .code-snippet {
+        background-color: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: monospace;
+        font-size: 0.9em;
+        color: #1f2937;
+      }
+      .chart-container {
+        position: relative;
+        width: 100%;
+        max-width: 400px;
+        margin-left: auto;
+        margin-right: auto;
+        height: auto;
+        max-height: 400px;
+      }
+      /* Styles for the nested tasks */
+      .task-group-details {
+        background-color: #ffffff; /* Same as main content panel */
+        border: 1px solid #e0e7ff; /* Light blue border */
+        border-radius: 0.5rem; /* Rounded corners */
+        margin-top: 1.5rem; /* Space above this details block */
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+          0 1px 2px 0 rgba(0, 0, 0, 0.06); /* Subtle shadow */
+      }
+      .task-group-summary {
+        font-weight: 600; /* Bold text for summary */
+        padding: 1rem 1.5rem; /* Padding inside summary */
+        cursor: pointer; /* Indicate clickable */
+        display: flex; /* Use flexbox for alignment */
+        align-items: center; /* Center items vertically */
+        justify-content: space-between; /* Space out content and icon */
+        color: #3730a3; /* Indigo text color */
+        transition: background-color 0.15s ease-in-out; /* Smooth hover effect */
+      }
+      .task-group-summary:hover {
+        background-color: #eff6ff; /* Lighter background on hover */
+      }
+      .task-group-summary::-webkit-details-marker {
+        display: none; /* Hide default triangle marker */
+      }
+      .task-group-summary::before {
+        content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" /></svg>');
+        display: inline-block;
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.75rem;
+        transition: transform 0.2s ease-in-out;
+      }
+      .task-group-details[open] .task-group-summary::before {
+        content: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" /></svg>');
+        transform: rotate(180deg);
+      }
+      .task-group-content {
+        padding: 0 1.5rem 1rem 1.5rem; /* Padding for content */
+        color: #4a4a4a; /* Dark gray text */
+        line-height: 1.6; /* Improved readability */
+      }
+      .nested-task-item {
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px dashed #e0e7ff;
+      }
+      .nested-task-item:last-child {
+        margin-bottom: 0;
+        border-bottom: none;
+      }
+    </style>
+  </head>
+  <body class="antialiased">
+    <div class="min-h-screen">
+      <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto py-4 px-4 sm:px-6 lg:px-8">
+          <h1 class="text-3xl font-bold leading-tight text-gray-900">
+            15-Day Java Crash Course
+          </h1>
+          <p class="mt-1 text-sm text-gray-600">
+            An Interactive Syllabus for Students with cs Background.
+          </p>
+        </div>
+      </header>
+
+      <main class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <aside class="lg:col-span-3">
+            <nav
+              id="syllabus-nav"
+              class="bg-white p-4 rounded-lg shadow-sm sticky top-6"
+            ></nav>
+          </aside>
+
+          <div class="lg:col-span-6">
+            <div
+              id="content-panel"
+              class="bg-white p-6 rounded-lg shadow-sm min-h-[60vh]"
+            ></div>
+          </div>
+
+          <aside class="lg:col-span-3">
+            <div class="bg-white p-4 rounded-lg shadow-sm sticky top-6">
+              <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">
+                Course Structure
+              </h3>
+              <p class="text-xs text-gray-500 text-center mb-4">
+                This chart shows the distribution of topics across the three
+                weeks, giving you a high-level view of the course's focus areas.
+              </p>
+              <div class="chart-container">
+                <canvas id="progressChart"></canvas>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      const syllabusData = [
+        {
+          week: 1,
+          day: 1,
+          title: "Introduction to Java - The JVM and Basic Syntax ☕",
+          lecture: [
+            "Java's 'Write Once, Run Anywhere' Philosophy: JVM, JRE, JDK, bytecode.",
+            "Comparing Java to C++: Key differences in memory management (no pointers!), compilation, and execution.",
+            "Basic Java Program Structure: <span class='code-snippet'>public static void main(String[] args)</span>.",
+            "Variables & Data Types: Primitive types (int, float, double, boolean, char) and their default values.",
+            "Operators: Arithmetic, relational, logical, assignment.",
+            "Console Output: <span class='code-snippet'>System.out.println()</span>, <span class='code-snippet'>System.out.print()</span>.",
+            "Input: Basic <span class='code-snippet'>Scanner</span> class usage.",
+          ],
+          tasks: [
+            "Write a 'Hello, Java!' program.",
+            "Create a program that takes two numbers as input, performs basic arithmetic operations (addition, subtraction, multiplication, division), and prints the results.",
+            "Convert a simple C++ PF program (e.g., calculate simple interest) into Java.",
+            // New entry for all 10 home tasks
+            `<details class="task-group-details">
+              <summary class="task-group-summary">Home Tasks</summary>
+              <div class="task-group-content">
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">1. Quotient and Remainder Calculation</h3>
+                  <p class="text-sm">
+                    Write a program that inputs a dividend and a divisor. It then
+                    calculates and displays the quotient and remainder.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">2. Swap Two Numbers (with third variable)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs two numbers, swaps their values using a
+                    third variable, and then displays them.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">3. Swap Two Numbers (without third variable)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs two numbers, swaps these values
+                    without using a third variable, and displays them.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">4. Miles to Kilometers Converter</h3>
+                  <p class="text-sm">
+                    Write a program that inputs miles from the user and converts miles
+                    into kilometers. (Hint: 1 mile = 1.60934 kilometers)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">5. Sum, Average, and Product of Four Numbers</h3>
+                  <p class="text-sm">
+                    Write a program that inputs 4 numbers and calculates the sum,
+                    average, and product of all numbers.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">6. Age Converter (Years to Days/Months)</h3>
+                  <p class="text-sm">
+                    Write a program that inputs age in years and displays age in days
+                    and months. (Assume 365 days per year and 30 days per month for simplicity)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">7. Car Travel Distance Calculator</h3>
+                  <p class="text-sm">
+                    A car can travel 5.3 miles in 1 liter. Write a program that
+                    inputs petrol in liters and displays how much distance the car can
+                    cover using the available petrol.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">8. Class Fee Calculator</h3>
+                  <p class="text-sm">
+                    Write a program that inputs the total number of students in a
+                    class and the fee per student. It displays the total fee collected
+                    from the class.
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">9. Fahrenheit to Celsius Converter</h3>
+                  <p class="text-sm">
+                    Write a program that inputs temperature from the user in Fahrenheit
+                    and converts it into Celsius degree. (Formula: C = (F - 32) * 5/9)
+                  </p>
+                </div>
+
+                <div class="nested-task-item">
+                  <h3 class="text-base font-semibold text-gray-800 mb-1">10. Student Marks and Percentage Calculator</h3>
+                  <p class="text-sm">
+                    Write a program that inputs marks obtained by a student in five
+                    subjects. It then calculates and displays the total marks and
+                    percentage.
+                  </p>
+                </div>
+              </div>
+            </details>`,
+          ],
+        },
+        {
+          week: 1,
+          day: 2,
+          title: "Control Flow Statements",
+          lecture: [
+            "Conditional Statements: <span class='code-snippet'>if</span>, <span class='code-snippet'>if-else</span>, <span class='code-snippet'>if-else if-else</span> ladder.",
+            "Switch Statement: Usage and fall-through behavior.",
+            "Looping Constructs: <span class='code-snippet'>for</span>, <span class='code-snippet'>while</span>, <span class='code-snippet'>do-while</span> loops.",
+            "Loop Control Statements: <span class='code-snippet'>break</span> and <span class='code-snippet'>continue</span>.",
+          ],
+          tasks: [
+            "Write a Java program to check if a given number is even or odd.",
+            "Implement a <span class='code-snippet'>switch</span> statement to display the day of the week based on a number (1-7).",
+            "Develop a program to calculate the factorial of a number using a <span class='code-snippet'>for</span> loop.",
+            "Create a <span class='code-snippet'>while</span> loop that counts down from 10 to 1.",
+          ],
+        },
+        {
+          week: 1,
+          day: 3,
+          title: "Arrays",
+          lecture: [
+            "Declaring & Initializing Arrays: One-dimensional arrays.",
+            "Accessing Array Elements: Indexing.",
+            "<span class='code-snippet'>length</span> Property: Finding array size.",
+            "Iterating Arrays: Traditional <span class='code-snippet'>for</span> loop and Enhanced <span class='code-snippet'>for</span> loop (for-each loop).",
+            "Multi-dimensional Arrays: Basics of 2D arrays.",
+          ],
+          tasks: [
+            "Create an array of 5 integers, take values from the user, and print the sum and average.",
+            "Find the largest and smallest element in an array.",
+            "Implement matrix addition for two 2x2 matrices using 2D arrays.",
+          ],
+        },
+        {
+          week: 1,
+          day: 4,
+          title: "Methods (Functions)",
+          lecture: [
+            "Defining Methods: Syntax, return types, parameters.",
+            "Calling Methods: Passing arguments.",
+            "<span class='code-snippet'>void</span> Return Type: Methods that don't return a value.",
+            "Method Overloading: Same method name, different parameters.",
+            "<span class='code-snippet'>return</span> Keyword: Exiting a method and returning a value.",
+          ],
+          tasks: [
+            "Write a method that takes two integers and returns their sum.",
+            "Create an overloaded method to calculate the area of a circle (takes radius) and a rectangle (takes length and width).",
+            "Develop a method that checks if a given string is a palindrome.",
+          ],
+        },
+        {
+          week: 1,
+          day: 5,
+          title: "Strings",
+          lecture: [
+            "<span class='code-snippet'>String</span> Class: Immutability of Strings in Java.",
+            "String Creation: Literal vs. <span class='code-snippet'>new String()</span>.",
+            "Common String Methods: <span class class='code-snippet'>length()</span>, <span class='code-snippet'>charAt()</span>, <span class='code-snippet'>substring()</span>, <span class='code-snippet'>equals()</span>, etc.",
+            "<span class='code-snippet'>StringBuilder</span> & <span class='code-snippet'>StringBuffer</span>: Mutable alternatives for efficient string manipulation.",
+          ],
+          tasks: [
+            "Take a sentence as input and count the number of vowels and consonants.",
+            "Reverse a given string without using <span class='code-snippet'>StringBuilder</span>'s <span class='code-snippet'>reverse()</span> method.",
+            "Demonstrate the difference between <span class='code-snippet'>String</span> and <span class='code-snippet'>StringBuilder</span> by concatenating a large number of strings.",
+          ],
+        },
+        {
+          week: 2,
+          day: 6,
+          title: "Classes & Objects (Java OOP Deep Dive)",
+          lecture: [
+            "Recap OOP Principles (from C++ context): Encapsulation, Abstraction.",
+            "Class Definition in Java: Fields (instance variables) and Methods.",
+            "Object Creation: <span class='code-snippet'>new</span> keyword and constructors.",
+            "Constructors: Default, parameterized, constructor overloading.",
+            "<span class='code-snippet'>this</span> Keyword: Referring to the current object's members.",
+            "Access Modifiers: <span class='code-snippet'>public</span>, <span class='code-snippet'>private</span>, <span class='code-snippet'>protected</span>, <span class='code-snippet'>default</span>.",
+            "Static Members: <span class='code-snippet'>static</span> variables and methods.",
+          ],
+          tasks: [
+            "Design a <span class='code-snippet'>Student</span> class with name, rollNo, and marks. Include a constructor and a method to print details.",
+            "Add a <span class='code-snippet'>static</span> variable to the <span class='code-snippet'>Student</span> class to track the total number of students.",
+            "Implement getters and setters for the <span class='code-snippet'>Student</span> class attributes.",
+          ],
+        },
+        {
+          week: 2,
+          day: 7,
+          title: "Inheritance & Polymorphism",
+          lecture: [
+            "<span class='code-snippet'>extends</span> Keyword: Achieving inheritance.",
+            "<span class='code-snippet'>super</span> Keyword: Calling superclass constructor and methods.",
+            "Method Overriding: Runtime polymorphism.",
+            "<span class='code-snippet'>@Override</span> Annotation: Best practice for method overriding.",
+            "<span class='code-snippet'>instanceof</span> Operator: Checking object type.",
+            "<span class='code-snippet'>final</span> Keyword: Preventing inheritance, method overriding, and variable reassignment.",
+          ],
+          tasks: [
+            "Create a <span class='code-snippet'>Vehicle</span> class. Extend it with <span class='code-snippet'>Car</span> and <span class='code-snippet'>Motorcycle</span> classes. Override a <span class='code-snippet'>start()</span> method.",
+            "Demonstrate polymorphism by creating an array of <span class='code-snippet'>Vehicle</span> objects and calling their <span class='code-snippet'>start()</span> method.",
+            "Explore the usage of <span class='code-snippet'>final</span> with a variable, a method, and a class.",
+          ],
+        },
+        {
+          week: 2,
+          day: 8,
+          title: "Abstraction & Interfaces",
+          lecture: [
+            "Abstract Classes: Defining abstract methods and classes.",
+            "Rules for Abstract Classes: Cannot be instantiated, must be extended.",
+            "Interfaces: Pure abstraction, defining contracts.",
+            "<span class='code-snippet'>implements</span> Keyword: Implementing interfaces.",
+            "Differences: Abstract Class vs. Interface.",
+            "Default and Static Methods in Interfaces (Java 8+).",
+          ],
+          tasks: [
+            "Design an abstract class <span class='code-snippet'>Shape</span> with an abstract method <span class='code-snippet'>getArea()</span>. Create concrete classes <span class='code-snippet'>Circle</span> and <span class='code-snippet'>Rectangle</span>.",
+            "Define an interface <span class class='code-snippet'>Printable</span> with a <span class='code-snippet'>print()</span> method. Make your classes implement this interface.",
+          ],
+        },
+        {
+          week: 2,
+          day: 9,
+          title: "Packages & Encapsulation Best Practices",
+          lecture: [
+            "Packages: Organizing classes into namespaces.",
+            "<span class='code-snippet'>package</span> Keyword: Declaring a package.",
+            "<span class='code-snippet'>import</span> Keyword: Accessing classes from other packages.",
+            "Java's Naming Conventions.",
+            "Deep Dive into Encapsulation: Why it's crucial.",
+            "Getters and Setters: The standard way to access/modify private members.",
+          ],
+          tasks: [
+            "Organize your existing classes into appropriate packages.",
+            "Ensure all instance variables in your classes are <span class='code-snippet'>private</span> and accessed only via <span class='code-snippet'>public</span> getters and setters.",
+            "Create a <span class='code-snippet'>Main</span> class in a different package to demonstrate access.",
+          ],
+        },
+        {
+          week: 2,
+          day: 10,
+          title: "Exception Handling",
+          lecture: [
+            "What are Exceptions? Runtime errors.",
+            "The <span class='code-snippet'>try-catch</span> Block: Handling exceptions gracefully.",
+            "<span class='code-snippet'>finally</span> Block: Code that always executes.",
+            "<span class='code-snippet'>throw</span> Keyword: Explicitly throwing an exception.",
+            "<span class='code-snippet'>throws</span> Keyword: Declaring checked exceptions.",
+            "Checked vs. Unchecked Exceptions.",
+            "Custom Exceptions: Creating your own exception classes.",
+          ],
+          tasks: [
+            "Write a program that attempts to divide by zero and handles the <span class='code-snippet'>ArithmeticException</span>.",
+            "Create a method that tries to access an array out of bounds and catches <span class='code-snippet'>ArrayIndexOutOfBoundsException</span>.",
+            "Implement a custom <span class='code-snippet'>InvalidAgeException</span>.",
+          ],
+        },
+        {
+          week: 3,
+          day: 11,
+          title: "Collections Framework - Lists & Sets",
+          lecture: [
+            "Introduction to Collections Framework.",
+            "<span class='code-snippet'>List</span> Interface: Ordered, allows duplicates. (<span class='code-snippet'>ArrayList</span>, <span class='code-snippet'>LinkedList</span>)",
+            "<span class='code-snippet'>Set</span> Interface: Unordered, no duplicates. (<span class='code-snippet'>HashSet</span>, <span class='code-snippet'>LinkedHashSet</span>, <span class='code-snippet'>TreeSet</span>)",
+            "Generics: Brief introduction to <span class='code-snippet'><T></span> for type safety.",
+          ],
+          tasks: [
+            "Create an <span class='code-snippet'>ArrayList</span> of strings, add/remove elements, and iterate through it.",
+            "Use a <span class='code-snippet'>HashSet</span> to get unique names from a list with duplicates.",
+            "Demonstrate the difference in order between <span class='code-snippet'>HashSet</span> and <span class='code-snippet'>LinkedHashSet</span>.",
+          ],
+        },
+        {
+          week: 3,
+          day: 12,
+          title: "Collections Framework - Maps & Iterators",
+          lecture: [
+            "<span class='code-snippet'>Map</span> Interface: Stores key-value pairs.",
+            "<span class='code-snippet'>HashMap</span>, <span class='code-snippet'>LinkedHashMap</span>, <span class='code-snippet'>TreeMap</span>.",
+            "Iterating Over Collections: Using <span class='code-snippet'>Iterator</span>, enhanced <span class='code-snippet'>for</span> loop, and <span class='code-snippet'>forEach()</span>.",
+          ],
+          tasks: [
+            "Create a <span class='code-snippet'>HashMap</span> to store student names and marks.",
+            "Count the frequency of each word in a sentence using a <span class='code-snippet'>HashMap</span>.",
+            "Iterate through a <span class='code-snippet'>HashMap</span> using both <span class='code-snippet'>entrySet()</span> and <span class='code-snippet'>keySet()</span>.",
+          ],
+        },
+        {
+          week: 3,
+          day: 13,
+          title: "File I/O (Input/Output) Basics",
+          lecture: [
+            "<span class='code-snippet'>File</span> Class: Representing files and directories.",
+            "Reading Text Files: <span class='code-snippet'>FileReader</span>, <span class='code-snippet'>BufferedReader</span>.",
+            "Writing Text Files: <span class='code-snippet'>FileWriter</span>, <span class='code-snippet'>BufferedWriter</span>.",
+            "<span class='code-snippet'>try-with-resources</span> Statement (Java 7+): Automatic resource closing.",
+          ],
+          tasks: [
+            "Write a program that takes text from the user and saves it to a file.",
+            "Read the content of the file and print it to the console.",
+            "Append new text to an existing file.",
+          ],
+        },
+        {
+          week: 3,
+          day: 14,
+          title: "Introduction to GUI (Graphical User Interface)",
+          lecture: [
+            "Brief Overview: What is GUI programming?",
+            "Introduction to Swing: Components, containers, event handling.",
+            "Basic Swing Components: <span class='code-snippet'>JFrame</span>, <span class='code-snippet'>JButton</span>, <span class='code-snippet'>JLabel</span>, <span class='code-snippet'>JTextField</span>.",
+            "Event Handling: <span class='code-snippet'>ActionListener</span> and <span class='code-snippet'>ActionEvent</span>.",
+          ],
+          tasks: [
+            "Create a simple Swing application with a window, a label, and a button.",
+            "Add an <span class='code-snippet'>ActionListener</span> to the button to change the label's text on click.",
+          ],
+        },
+        {
+          week: 3,
+          day: 15,
+          title: "Review & Mini-Project Discussion",
+          lecture: [
+            "Q&A Session: Address any lingering doubts.",
+            "Review of Key Concepts: OOP, Collections, Exception Handling.",
+            "Discussion of a Capstone Mini-Project.",
+            "Project Planning & Scoping.",
+            "Further Learning Resources.",
+          ],
+          tasks: [
+            "In groups, propose and outline a mini-project idea.",
+            "Individually, solve 2-3 mixed conceptual problems covering OOP, Collections, and Exception Handling.",
+          ],
+        },
+      ];
+
+      let currentDayIndex = 0;
+
+      const navContainer = document.getElementById("syllabus-nav");
+      const contentContainer = document.getElementById("content-panel");
+
+      function renderNav() {
+        let navHTML = "";
+        let currentWeek = 0;
+        syllabusData.forEach((item, index) => {
+          if (item.week !== currentWeek) {
+            currentWeek = item.week;
+            if (currentWeek > 1) {
+              navHTML += `</ul>`;
+            }
+            navHTML += `<h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mt-4 mb-2">Week ${currentWeek}</h4><ul>`;
+          }
+          navHTML += `
+                            <li>
+                                <a href="#" class="nav-link block px-3 py-2 text-sm rounded-md transition-colors duration-150 ${
+                                  index === currentDayIndex
+                                    ? "active"
+                                    : "hover:bg-gray-100"
+                                }" data-index="${index}">
+                                    Day ${item.day}: ${
+            item.title.split(" - ")[0]
+          }
+                                </a>
+                            </li>
+                        `;
+        });
+        navHTML += `</ul>`;
+        navContainer.innerHTML = navHTML;
+      }
+
+      function renderContent(index) {
+        const dayData = syllabusData[index];
+        const lectureItems = dayData.lecture
+          .map((item) => `<li class="mb-2">${item}</li>`)
+          .join("");
+        // Task items are rendered directly from the array, allowing raw HTML
+        const taskItems = dayData.tasks
+          .map((item) => `<li class="mb-2">${item}</li>`)
+          .join("");
+
+        const contentHTML = `
+                <div class="border-b border-gray-200 pb-4 mb-4">
+                    <h2 class="text-2xl font-bold text-gray-900">${dayData.title}</h2>
+                    <p class="text-sm text-gray-500">Day ${dayData.day} &middot; Week ${dayData.week}</p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-indigo-700 mb-3">Lecture Topics</h3>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        ${lectureItems}
+                    </ul>
+                </div>
+                <div class="mt-8">
+                    <h3 class="text-xl font-semibold text-indigo-700 mb-3">Daily Tasks</h3>
+                    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                        ${taskItems}
+                    </ol>
+                </div>
+            `;
+        contentContainer.innerHTML = contentHTML;
+      }
+
+      function updateActiveNavLink(index) {
+        document.querySelectorAll(".nav-link").forEach((link) => {
+          link.classList.remove("active");
+        });
+        const activeLink = document.querySelector(
+          `.nav-link[data-index="${index}"]`
+        );
+        if (activeLink) {
+          activeLink.classList.add("active");
+        }
+      }
+
+      navContainer.addEventListener("click", (e) => {
+        if (e.target.matches(".nav-link")) {
+          e.preventDefault();
+          const index = parseInt(e.target.dataset.index, 10);
+          if (index !== currentDayIndex) {
+            currentDayIndex = index;
+            renderContent(currentDayIndex);
+            updateActiveNavLink(currentDayIndex);
+          }
+        }
+      });
+
+      function renderChart() {
+        const ctx = document.getElementById("progressChart").getContext("2d");
+        const week1Topics = syllabusData.filter((d) => d.week === 1).length;
+        const week2Topics = syllabusData.filter((d) => d.week === 2).length;
+        const week3Topics = syllabusData.filter((d) => d.week === 3).length;
+
+        new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: [
+              "Week 1: Fundamentals",
+              "Week 2: Advanced OOP",
+              "Week 3: Core APIs & Projects",
+            ],
+            datasets: [
+              {
+                label: "Days per Topic",
+                data: [week1Topics, week2Topics, week3Topics],
+                backgroundColor: [
+                  "rgba(165, 180, 252, 0.7)",
+                  "rgba(129, 140, 248, 0.7)",
+                  "rgba(79, 70, 229, 0.7)",
+                ],
+                borderColor: ["#A5B4FC", "#818CF8", "#4F46E5"],
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  boxWidth: 12,
+                  padding: 15,
+                },
+              },
+              tooltip: {
+                callbacks: {
+                  label: function (context) {
+                    let label = context.label || "";
+                    if (label) {
+                      label += ": ";
+                    }
+                    if (context.parsed !== null) {
+                      label += context.parsed + " days";
+                    }
+                    return label;
+                  },
+                },
+              },
+            },
+          },
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        renderNav();
+        renderContent(currentDayIndex);
+        renderChart();
+      });
+    </script>
+  </body>
+</html>
