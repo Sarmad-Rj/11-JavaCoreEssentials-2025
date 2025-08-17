@@ -8,3 +8,7 @@ Covers:
 - Essential concepts  
 
 📘 [Course Outline](https://sarmad-rj.github.io/11-JavaCoreEssentials-2025/)  
+
+<p style="text-align: left;">
+  <img src="" alt="JavaCoreEssentials Logo">
+</p>
