@@ -9,7 +9,6 @@ public class user_input {
 
 //        sc.nextInt();
 //        sc.nextBoolean();
-//
         String name1 = "Zoha";
         System.out.println(name1);
 
