@@ -70,3 +70,19 @@ public class test {
 //
 //    return 0;
 //}
+
+
+
+
+
+
+
+
+
+
+//Use four arrays (numbers, squares, cubes, sums) of 5 elements:
+//o	numbers[i] = i
+//o	squares[i] = i²
+//o	cubes[i] = i³
+//o	sums[i] = numbers[i] + squares[i] + cubes[i]
+//Display all arrays and the total of all values in sums.
