@@ -1,7 +1,5 @@
 package Day3;
 
-import java.util.Arrays;
-
 public class Topic_2_2D_Array {
     public static void main(String[] args) {
 
@@ -15,7 +13,7 @@ public class Topic_2_2D_Array {
         numbers[1][2] = 6;
 
         //   R  =  cols   = values
-        //  [0] = [0,1,2] = [1,2,3]
+        //  [0] = [0,1] = [1,2]
         //  [1] = [0,1,2] = [4,5,6]
 
         System.out.println(numbers[0][2]);
