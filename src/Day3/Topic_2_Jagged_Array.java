@@ -1,17 +1,7 @@
-public class test {
+package Day3;
+
+public class Topic_2_Jagged_Array {
     public static void main(String[] args) {
-        // 3 rows, 2 columns (all elements initialized to 0)
-        int[][] matrix = new int[3][2];
-
-        // Initialize with values
-        int[][] grid = {
-                {1, 2, 3},   // Row 0
-                {4, 5, 6},   // Row 1
-                {7, 8, 9},
-                {3, 3, 3}      // Row 3
-        };
-
-
         int[][] jagged = new int[3][];
 
         // Create sub-arrays of different lengths
@@ -34,7 +24,7 @@ public class test {
     }
 }
 
-
+// C++ code
 //#include <iostream>
 //using namespace std;
 //
@@ -69,19 +59,3 @@ public class test {
 //
 //    return 0;
 //}
-
-
-
-
-
-
-
-
-
-
-//Use four arrays (numbers, squares, cubes, sums) of 5 elements:
-//o	numbers[i] = i
-//o	squares[i] = i²
-//o	cubes[i] = i³
-//o	sums[i] = numbers[i] + squares[i] + cubes[i]
-//Display all arrays and the total of all values in sums.
