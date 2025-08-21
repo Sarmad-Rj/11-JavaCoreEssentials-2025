@@ -35,7 +35,7 @@ public class Topic_5_Loops {
         } while (i <= 10);
         System.out.println();
 
-        System.out.println(" While Loop ");
+        System.out.println(" While Loop. ");
         //  While Loop 
         // The condition is checked first. Since (j <= 10) is false, the loop never runs.
         int j = 20;
