@@ -4,17 +4,17 @@ public class Topic_5_Loops {
 
     public static void main(String[] args) {
 
-        // --- For Loop ---
+        //  For Loop 
         // A basic for loop to print numbers from 1 to 10.
         // It's ideal when you know the number of iterations in advance.
-        System.out.println("--- For Loop: Numbers 1 to 10 ---");
+        System.out.println(" For Loop: Numbers 1 to 10 ");
         for (int i = 1; i <= 10; i++) {
             System.out.println(i);
         }
         System.out.println();
 
-        System.out.println("--- Nested For Loop: 10 x 10 Grid ---");
-        // --- Nested For Loop ---
+        System.out.println(" Nested For Loop: 10 x 10 Grid ");
+        //  Nested For Loop 
         // The outer loop handles the rows, and the inner loop handles the columns.
         for (int i = 1; i <= 10; i++) { // Outer loop for rows
             for (int j = 1; j <= 10; j++) { // Inner loop for columns
@@ -24,8 +24,8 @@ public class Topic_5_Loops {
         }
         System.out.println();
 
-        System.out.println("--- Do-While Loop ---");
-        // --- Do-While Loop ---
+        System.out.println(" DoWhile Loop ");
+        //  DoWhile Loop 
         // The loop body executes at least once before the condition is checked.
         // The condition (i <= 10) is false initially, so it runs once and exits.
         int i = 20;
@@ -35,8 +35,8 @@ public class Topic_5_Loops {
         } while (i <= 10);
         System.out.println();
 
-        System.out.println("--- While Loop ---");
-        // --- While Loop ---
+        System.out.println(" While Loop ");
+        //  While Loop 
         // The condition is checked first. Since (j <= 10) is false, the loop never runs.
         int j = 20;
         while (j <= 10) {
@@ -45,8 +45,8 @@ public class Topic_5_Loops {
         }
         System.out.println();
 
-        System.out.println("--- For Loop with 'continue' ---");
-        // --- For Loop with 'continue' Statement ---
+        System.out.println(" For Loop with 'continue' ");
+        //  For Loop with 'continue' Statement 
         // 'continue' skips the rest of the current iteration and proceeds to the next one.
         // This loop prints only the odd numbers from 1 to 10.
         for (int k = 1; k <= 10; k++) {

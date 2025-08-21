@@ -3,7 +3,7 @@ package Day2;
 public class Topic_2_Type_Casting {
     public static void main(String[] args) {
 
-        // --- Widening (Automatic) Type Casting ---
+        // --- Widening (Implicit) Type Casting ---
         // A smaller data type (byte) is assigned to a larger data type (int).
         byte a = 5;
         int b = a;
