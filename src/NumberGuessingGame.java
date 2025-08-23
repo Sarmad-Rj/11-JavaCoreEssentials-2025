@@ -19,7 +19,7 @@ public class NumberGuessingGame {
             int guess = sc.nextInt();
 
             if (guess == secretNumber) {
-                System.out.println("🎉 Congratulations! You found the number in " + i + " attempts");
+                System.out.println("🎉 Congratulations! You found the number in " + i + " attempts.");
                 guessed = true;
                 break;
             } else if (guess < secretNumber) {
